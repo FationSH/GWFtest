@@ -3,6 +3,9 @@ package com.toni.gwftest.httpsClient;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -11,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.toni.gwftest.login.SharedPrefManager;
 import com.toni.gwftest.login.model.User;
+import com.toni.gwftest.view.MetersFragment;
 
 import org.json.JSONObject;
 
@@ -28,7 +32,7 @@ public class RefreshToken {
     /**
      * Refresh token
      */
-    public void refreshToken(String refresh_url, final VolleyCallback callback) {
+    public void refreshToken(String refresh_url, Fragment frag, FragmentTransaction ft) {
         RequestQueue mQueue = VolleySingleton.getInstance(context).getRequestQueue();
 
         StringRequest request = new StringRequest(Request.Method.POST, refresh_url, new Response.Listener<String>() {
@@ -49,7 +53,9 @@ public class RefreshToken {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // TODO refresh token has expired => Logout
+                SharedPrefManager.getInstance(context).logout();
+                ft.detach(frag);
+                ft.commit();
             }
         }) {
             @Override

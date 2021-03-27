@@ -14,7 +14,7 @@
 
     <!-- URLs -->
     <string name="login_url">https://test-api.gwf.ch/auth/token/</string>
-    <string name="refresh_url">https://test-api.gwf.ch/auth/token/refresh</string>
+    <string name="refresh_url">https://test-api.gwf.ch/auth/token/refresh/</string>
     <string name="get_totals_url">https://test-api.gwf.ch/reports/measurements/total/</string>
     <string name="get_meters_url">https://test-api.gwf.ch/reports/measurements/</string>
 
@@ -32,5 +32,9 @@
     <!-- Meters -->
     <string name="meters">Meters</string>
     <string name="no_meters">No Meters</string>
+    <string name="search_by_id">Search by id</string>
+
+    <!-- Map -->
+    <string name="map">Map will be added in the next version</string>
 
 </resources>

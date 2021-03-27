@@ -1,6 +1,9 @@
 package com.toni.gwftest.view;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,9 +17,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.android.volley.VolleyError;
 import com.toni.gwftest.R;
 import com.toni.gwftest.httpsClient.GetMetersRequest;
+import com.toni.gwftest.httpsClient.RefreshToken;
 import com.toni.gwftest.httpsClient.VolleyCallback;
 import com.toni.gwftest.login.SharedPrefManager;
 import com.toni.gwftest.login.model.User;
@@ -100,22 +106,7 @@ public class ProfileFragment extends Fragment  {
         unit.setText("Συνολικές Μετρήσεις");
 
         // Get Totals
-        getMetersRequest.getMeters(totalsUrl, new VolleyCallback() {
-            @Override
-            public void onSuccess(String response) {
-                try {
-                    JSONObject objson = new JSONObject(response);
-                    setTotals(objson);
-                } catch (Throwable t) {
-                    Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
-                }
-            }
-
-            @Override
-            public void onError(String result) {
-                // TODO refresh token
-            }
-        });
+        getTotals();
 
         // Set button listener
         logout = view.findViewById(R.id.logout);
@@ -127,6 +118,41 @@ public class ProfileFragment extends Fragment  {
         });
 
         return view;
+    }
+
+    private void getTotals(){
+        // Check internet connection
+        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo == null || !networkInfo.isConnected() ||
+                (networkInfo.getType() != ConnectivityManager.TYPE_WIFI
+                        && networkInfo.getType() != ConnectivityManager.TYPE_MOBILE)) {
+            Toast.makeText(getContext(), "No internet.", Toast.LENGTH_SHORT).show();
+        } else {
+
+            Fragment profFrag = this;
+            final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+
+            getMetersRequest.getMeters(totalsUrl, new VolleyCallback() {
+                @Override
+                public void onSuccess(String response) {
+                    try {
+                        JSONObject objson = new JSONObject(response);
+                        setTotals(objson);
+                    } catch (Throwable t) {
+                        Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
+                    }
+                }
+
+                @Override
+                public void onError(VolleyError result) {
+                    // Refresh token and get data
+                    RefreshToken refreshToken = new RefreshToken(mainActivity);
+                    refreshToken.refreshToken(getString(R.string.refresh_url), profFrag, ft);
+                    getTotals();
+                }
+            });
+        }
     }
 
     private void setTotals(JSONObject objson){
@@ -159,4 +185,5 @@ public class ProfileFragment extends Fragment  {
             e.printStackTrace();
         }
     }
+
 }

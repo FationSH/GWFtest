@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import com.toni.gwftest.login.model.User;
 import com.toni.gwftest.view.LoginActivity;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 /**
  * We use singleton pattern
  * SharedPrefManager for storing User information and Token
@@ -48,14 +50,6 @@ public class SharedPrefManager {
     }
 
     /**
-     * this method will check whether user is already logged in or not
-     */
-    public boolean isLoggedIn() {
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_TOKEN, null) != null;
-    }
-
-    /**
      * this method will give the logged in user
      */
     public User getUser() {
@@ -75,6 +69,6 @@ public class SharedPrefManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
-        mCtx.startActivity(new Intent(mCtx, LoginActivity.class));
+        mCtx.startActivity(new Intent(mCtx, LoginActivity.class).setFlags(FLAG_ACTIVITY_NEW_TASK));
     }
 }

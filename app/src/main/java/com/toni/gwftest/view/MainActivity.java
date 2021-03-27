@@ -15,7 +15,6 @@ import com.toni.gwftest.utils.NetworkChangeReceiver;
 import org.buffer.adaptablebottomnavigation.view.AdaptableBottomNavigationView;
 import org.buffer.adaptablebottomnavigation.view.ViewSwapper;
 
-
 public class MainActivity extends AppCompatActivity {
 
     private static final int METERS = 0;
@@ -23,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int PROFILE = 2;
 
     protected AdaptableBottomNavigationView bottomNavigationView;
-    private ViewSwapperAdapter viewSwapperAdapter;
     protected ViewSwapper viewSwapper;
     private int selectedPosition;
 
@@ -40,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.view_bottom_navigation);
         viewSwapper = (ViewSwapper) findViewById(R.id.view_swapper);
 
-        viewSwapperAdapter = new ViewSwapperAdapter(getSupportFragmentManager());
+        ViewSwapperAdapter viewSwapperAdapter = new ViewSwapperAdapter(getSupportFragmentManager());
         viewSwapper.setAdapter(viewSwapperAdapter);
         bottomNavigationView.setupWithViewSwapper(viewSwapper);
 

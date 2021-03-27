@@ -46,7 +46,11 @@ public class GetMetersRequest {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // TODO get refresh token
+                try {
+                    callback.onError(error);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }) {
             @Override

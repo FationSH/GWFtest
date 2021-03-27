@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.VolleyError;
 import com.google.android.material.textfield.TextInputLayout;
 import com.toni.gwftest.R;
 import com.toni.gwftest.httpsClient.LoginRequest;
@@ -44,15 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         loginRequest = new LoginRequest(getApplicationContext());
-
-        // If user already logged in
-        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
-            // TODO check if token has expired
-//            if (!(new UserHelper(this)).hasExpired()){
-//                finish();
-//                startActivity(new Intent(this, MainActivity.class));
-//            }
-        }
 
         username = this.getPreferences(Context.MODE_PRIVATE);
         editor = username.edit();
@@ -165,41 +158,51 @@ public class LoginActivity extends AppCompatActivity {
      * Handle login response
      */
     private void login(){
-        loginRequest.userLogin(login_url, email.getText().toString(), password.getText().toString(), new VolleyCallback() {
-            @Override
-            public void onSuccess(String response) {
-                try {
-                    // get response
-                    JSONObject objson = new JSONObject(response);
-                    if (objson.has("access")) {
-                        //creating a new user object
-                        User user = new User(email.getText().toString(),
-                                objson.getString("access"),
-                                objson.getString("refresh"));
-                        //store the user in shared preferences
-                        SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+        // Check internet connection
+        ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo == null || !networkInfo.isConnected() ||
+                (networkInfo.getType() != ConnectivityManager.TYPE_WIFI
+                        && networkInfo.getType() != ConnectivityManager.TYPE_MOBILE)) {
+            Toast.makeText(getApplicationContext(), "No internet.", Toast.LENGTH_SHORT).show();
+        } else {
 
-                        // Save Username
-                        editor.putString("email", email.getText().toString());
-                        editor.apply();
+            loginRequest.userLogin(login_url, email.getText().toString(), password.getText().toString(), new VolleyCallback() {
+                @Override
+                public void onSuccess(String response) {
+                    try {
+                        // get response
+                        JSONObject objson = new JSONObject(response);
+                        if (objson.has("access")) {
+                            //creating a new user object
+                            User user = new User(email.getText().toString(),
+                                    objson.getString("access"),
+                                    objson.getString("refresh"));
+                            //store the user in shared preferences
+                            SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
 
-                        // Start Main Activity
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        finish();
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error occurred", Toast.LENGTH_SHORT).show();
+                            // Save Username
+                            editor.putString("email", email.getText().toString());
+                            editor.apply();
+
+                            // Start Main Activity
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            finish();
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error occurred", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Throwable t) {
+                        Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
                     }
-                } catch (Throwable t) {
-                    Log.e("My App", "Could not parse malformed JSON: \"" + response + "\"");
                 }
-            }
 
-            @Override
-            public void onError(String result) {
-                Toast.makeText(getApplicationContext(), "Something went wrong, try again.", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onError(VolleyError result) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong, try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
 }
