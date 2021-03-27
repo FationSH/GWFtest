@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.toni.gwftest.view.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <org.buffer.adaptablebottomnavigation.view.ViewSwapper
+        android:id="@+id/view_swapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_above="@+id/view_bottom_navigation"
+        android:layout_marginBottom="0dp" />
+
+    <org.buffer.adaptablebottomnavigation.view.AdaptableBottomNavigationView
+        android:id="@+id/view_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@drawable/selector_menu"
+        app:itemTextColor="@drawable/selector_menu"
+        app:menu="@menu/menu_nav_bar" />
+
+</RelativeLayout>
