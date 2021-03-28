@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.toni.gwftest.R;
 import com.toni.gwftest.utils.NetworkChangeReceiver;
+import com.toni.gwftest.view.model.Meter;
 
 import org.buffer.adaptablebottomnavigation.view.AdaptableBottomNavigationView;
 import org.buffer.adaptablebottomnavigation.view.ViewSwapper;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected AdaptableBottomNavigationView bottomNavigationView;
     protected ViewSwapper viewSwapper;
     private int selectedPosition;
+    protected Meter selectedMeter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

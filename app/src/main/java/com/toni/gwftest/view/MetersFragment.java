@@ -18,13 +18,15 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 import com.toni.gwftest.R;
 import com.toni.gwftest.httpsClient.GetMetersRequest;
 import com.toni.gwftest.httpsClient.RefreshToken;
@@ -105,6 +107,10 @@ public class MetersFragment extends Fragment {
 
     private class HandleSearch {
         public HandleSearch(Meter meter) {
+            // Set selected Meter
+            mainActivity.selectedMeter = meter;
+
+            // Pop up a window with meter's info
             //We need to get the instance of the LayoutInflater, use the context of this activity
             LayoutInflater inflater = (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             //Inflate the view from a predefined XML layout (no need for root id, using entire layout)
@@ -145,6 +151,7 @@ public class MetersFragment extends Fragment {
                         obj.getString("last_entry"), obj.getString("volume"),
                         obj.getString("battery_lifetime"), obj.getJSONObject("state"));
                 meterList.put(meter.getMeterId(), meter);
+                mainActivity.selectedMeter = meter;     // Keep the last as selected to plot on map
             } catch (JSONException e) {
                 e.printStackTrace();
             }

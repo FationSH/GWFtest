@@ -4,14 +4,10 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="40sp"
-        android:layout_gravity="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:padding="18dp"
-        android:text="@string/map">
-    </TextView>
+        android:layout_height="wrap_content" >
+    </com.google.android.gms.maps.MapView>
 
 </LinearLayout>

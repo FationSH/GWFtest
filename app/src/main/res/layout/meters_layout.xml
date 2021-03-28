@@ -18,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="2dp"
-        android:paddingEnd="16dp">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
         <ImageView
             android:layout_width="32dp"
@@ -37,7 +38,7 @@
             android:id="@+id/search_bar_enter"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@drawable/meters_img" />
+            android:background="@drawable/search_img" />
 
     </LinearLayout>
 
